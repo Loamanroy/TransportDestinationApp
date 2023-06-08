@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3.1'
+services:
+  web:
+    build: .
+    command: python delivery/manage.py runserver
+    volumes:
+      - .:/code
+      - ./postgres-init:/docker-entrypoint-initdb.d
+      - ./data:/data
+      - ./postgres-init/import.sql:/docker-entrypoint-initdb.d/import.sql
+    depends_on:
+      - db
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      ALLOWED_HOSTS: localhost|127.0.0.1
+      POSTGRES_DB: Welbex
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
